@@ -45,8 +45,8 @@ internal class MockkProducts {
         return NumberFormat.getCurrencyInstance(Locale.getDefault()).format(total)
     }
     fun getTotal() : BigDecimal {
-        val total = BigDecimal(0)
-        memory.filter { it.isSelected }.forEach { total.plus(it.price) }
+        var total = BigDecimal(0)
+        memory.filter { it.isSelected }.forEach { total += it.price }
         return total
     }
 }

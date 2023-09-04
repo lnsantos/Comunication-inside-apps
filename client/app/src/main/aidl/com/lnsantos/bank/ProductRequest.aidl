@@ -1,5 +1,5 @@
 // ProductRequest.aidl
-package com.lnsantos.clientapp;
+package com.lnsantos.bank;
 
 // Declare any non-default types here with import statements
 

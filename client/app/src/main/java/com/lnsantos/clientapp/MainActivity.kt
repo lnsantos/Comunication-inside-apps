@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.lnsantos.bank.ServerBankPaymentidlInterface
 import com.lnsantos.clientapp.mock.MockkProducts
 import com.lnsantos.clientapp.model.ProductItemUI
 import com.lnsantos.clientapp.ui.theme.ClientAppTheme
@@ -55,7 +56,7 @@ import java.math.BigDecimal
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), ServiceConnection {
 
     private val mock = MockkProducts()
 
@@ -68,6 +69,8 @@ class MainActivity : ComponentActivity() {
                 val items = remember { mutableStateOf(mock.memory) }
                 val columnState = rememberLazyListState()
                 val isFinished = remember { mutableStateOf(false) }
+                val context = LocalContext.current
+
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
@@ -92,7 +95,7 @@ class MainActivity : ComponentActivity() {
                                             val intent = Intent().apply {
                                                 component = ComponentName(
                                                     "com.lnsantos.server",
-                                                    "com.lnsantos.server.PaymentService"
+                                                    "com.lnsantos.server.service.BankPaymentService"
                                                 )
                                             }
 
@@ -105,11 +108,11 @@ class MainActivity : ComponentActivity() {
                                                         .Stub
                                                         .asInterface(service)
 
-                                                    isFinished.value = serviceBank.send(
+                                                    serviceBank.send(
                                                         mock.getTotal().longValueExact(),
                                                         UUID.randomUUID().toString(),
                                                         "client_app"
-                                                    ) == 1
+                                                    )
                                                 }
 
                                                 override fun onServiceDisconnected(name: ComponentName?) {
@@ -117,12 +120,11 @@ class MainActivity : ComponentActivity() {
                                                 }
                                             }
 
-                                            baseContext.bindService(
+                                            context.bindService(
                                                 intent,
                                                 callbackBind,
                                                 Context.BIND_AUTO_CREATE
                                             )
-
                                         },
                                         enabled = shopQuantity.value != 0
                                     ) {
@@ -175,6 +177,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onServiceDisconnected(name: ComponentName?) {
+        TODO("Not yet implemented")
     }
 }
 
